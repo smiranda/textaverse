@@ -1,0 +1,53 @@
+{
+  "rooms": [
+    {
+      "id": "room:entry:hall",
+      "description": "A grandiose hall lined with white marble. A fifty feet golden statue stands at the northenmost section, with emerald eyes gleaming as if seeing farther than the present time.",
+      "objects": [
+        {
+          "id": "object:left-emerald-eye",
+          "inroom-description": "",
+          "inroom-designation": [
+            "left eye",
+            "left emerald eye"
+          ],
+          "trigger": {
+            "get": {
+              "message": "You retrieve the eye from the golden statue. A cold shiver streams down your spine."
+            },
+            "put": {
+              "message": "You place the emerald back into the golden statue's eye socket. The eye gleams intensely."
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "passages": [
+    {
+      "source": "room:entry:hall",
+      "destination": "room:entry:dark-room",
+      "description": "A small roten wooden door retrofitted with an old brass handle."
+    }
+  ],
+  "objects": [
+    {
+      "id": "object:left-emerald-eye",
+      "name": "Emerald Eye",
+      "description": "The left emerald eye of the golden statue from the hall.",
+      "traits": [
+        "unique",
+        "gem"
+      ]
+    },
+    {
+      "id": "object:iron-sword",
+      "name": "Iron Sword",
+      "description": "An rusty iron sword.",
+      "traits": [
+        "weapon"
+      ],
+      "attack": 1.0
+    }
+  ]
+}
