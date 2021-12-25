@@ -4,40 +4,67 @@ namespace textaverse_parser
   using Antlr4.Runtime;
   using Antlr4.Runtime.Misc;
   using Antlr4.Runtime.Tree;
+  using Newtonsoft.Json.Linq;
   using System;
   using System.Collections.Generic;
   using System.IO;
   using System.Linq;
   using System.Text;
+  using Textaverse.Models;
 
-  public class VerseFile
+  public class TextaverseTestVisitor : TextaverseBaseVisitor<Verse>
   {
-    public VerseFile()
+    public override Verse VisitFile([NotNull] TextaverseParser.FileContext ctx)
     {
-      Verbs = new List<string>();
+      var fileVerse = new Verse();
+      foreach (var s in ctx.sentence())
+      {
+        fileVerse.Commands.AddRange(Visit(s).Commands);
+      }
+      return fileVerse;
     }
-
-    public List<string> Verbs { get; set; }
-  }
-
-  public class TextaverseTestVisitor : TextaverseBaseVisitor<VerseFile>
-  {
-    private VerseFile _verseFile = new VerseFile();
-    public override VerseFile VisitCommand([NotNull] TextaverseParser.CommandContext ctx)
+    public override Verse VisitSentence([NotNull] TextaverseParser.SentenceContext ctx)
     {
-      Console.WriteLine($"{ctx.predicate()?.verb()?.WORD()}" +
-                        $"({string.Join('+', ctx.indirectobject()?.@object()?.noun()?.Select(n => n.WORD().ToString()) ?? new string[] { })}, " +
-                        $"{ctx.PREPOSITION()}, {string.Join('+', ctx.@object()?.noun()?.Select(n => n.WORD().ToString()) ?? new string[] { })}, " +
-                        $"{ctx.quotedarg()?.ANYWORDQUOTED()}) ");
-      return _verseFile;
+      var sentenceVerse = new Verse();
+      foreach (var c in ctx.command())
+      {
+        sentenceVerse.Commands.AddRange(Visit(c).Commands);
+      }
+      return sentenceVerse;
+    }
+    public override Verse VisitCommand([NotNull] TextaverseParser.CommandContext ctx)
+    {
 
+      var verbToken = ctx.predicate()?.verb()?.WORD()?.ToString();
+      var adverb = ctx.adverb() != null ? new Adverb(ctx.adverb()?.WORD()?.ToString()) : null;
+      var preposition = ctx.PREPOSITION() != null ? new Preposition(ctx.PREPOSITION()?.ToString()) : null;
+      string quote = ctx.quotedarg()?.ANYWORDQUOTED()?.ToString();
+
+      var indirectObjectToken = ctx.indirectobject() != null ? new IndirectObject(ctx.indirectobject()?.adjectivatedNoun()?.noun()?.WORD().ToString(),
+                                                                                  null/*ctx.indirectobject()?.adjectivatedNoun()?.adjective()?.WORD().ToString()*/)
+                                                             : null;
+
+      var directObjects = ctx.@object() != null ? ctx.@object()?.adjectivatedNoun()?
+                                                  .Select(n => new DirectObject(n.noun()?.WORD()?.ToString(),
+                                                                                null/*n.adjective()?.WORD()?.ToString()*/ ))
+                                                  .ToList()
+                                                : null;
+
+      var command = new Command(new Verb(verbToken),
+                                adverb,
+                                directObjects,
+                                indirectObjectToken,
+                                preposition,
+                                quote);
+
+      return new Verse(new List<Command>() { command });
     }
   }
   public class Program
   {
     static void Main(string[] args)
     {
-      if (args[0] == "--file" || args[0] == "-f")
+      if (args[0] == "--file")
       {
         // dotnet run --file test.vrs
         Try(File.ReadAllText(args[1]));
@@ -66,7 +93,10 @@ namespace textaverse_parser
       if (listener_lexer.had_error || listener_parser.had_error)
         System.Console.WriteLine("error in parse.");
       else
+      {
         System.Console.WriteLine("parse completed.");
+        Console.WriteLine(JObject.FromObject(r).ToString());
+      }
     }
   }
 }

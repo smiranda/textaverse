@@ -1,8 +1,8 @@
 namespace Textaverse.Models
 {
-  public class Verb
+  public class Preposition
   {
-    public Verb(string token)
+    public Preposition(string token)
     {
       Token = token;
     }

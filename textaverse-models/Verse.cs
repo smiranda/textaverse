@@ -4,11 +4,20 @@ using System.Collections.Generic;
 namespace Textaverse.Models
 {
   /// <summary>
-  /// An verse is a structured request to a room, agent or object to behave in some way.
+  /// A verse is a textaverse script, e.g., a sequence of commands.
   /// </summary>
   public class Verse
   {
-    public Verb Verb;
-    public Dictionary<string, string> Arguments; // TODO: Maybe object ? To cast later when Verb is known.
+    public Verse()
+    {
+      Commands = new List<Command>();
+    }
+
+    public Verse(List<Command> commands)
+    {
+      Commands = commands;
+    }
+
+    public List<Command> Commands { get; set; }
   }
 }

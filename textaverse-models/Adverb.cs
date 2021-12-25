@@ -1,8 +1,8 @@
 namespace Textaverse.Models
 {
-  public class Verb
+  public class Adverb
   {
-    public Verb(string token)
+    public Adverb(string token)
     {
       Token = token;
     }

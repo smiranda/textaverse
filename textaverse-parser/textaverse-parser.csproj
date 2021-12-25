@@ -15,6 +15,11 @@
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.3" />
     <PackageReference Include="Antlr4BuildTasks" Version="8.17" PrivateAssets="all" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\textaverse-models\textaverse-models.csproj" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

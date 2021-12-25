@@ -2,23 +2,28 @@
 
 file : sentence ((SEMI|FULLSTOP) sentence)* FULLSTOP* EOF;
 
-sentence : command | command adverb | sentence COMMA THEN sentence;
-command : predicate object |
-          predicate indirectobject PREPOSITION object | 
-          predicate quotedarg;
+sentence : command (COMMA THEN command)*;
+command : (predicate indirectobject |
+           predicate indirectobject PREPOSITION object | 
+           predicate quotedarg |
+           predicate PREPOSITION indirectobject quotedarg |
+           predicate quotedarg PREPOSITION indirectobject) (adverb)?;
+
 predicate : verb;
-indirectobject : object;
-object : (adjective)* noun (AND noun)*;
+indirectobject : adjectivatedNoun;
+object : adjectivatedNoun (AND adjectivatedNoun)*;
+//adjectivatedNoun : (adjective)? noun;
+adjectivatedNoun : noun;
 quotedarg : ANYWORDQUOTED;
 
 verb :  WORD;
 adverb : WORD;
-adjective : WORD;
+//adjective : WORD;
 noun : WORD;
 
 LINECOMMENT: '#' ~[\r\n]* -> channel(2);
 
-PREPOSITION : 'in' | 'at' | 'on' | 'of' | 'to' | 'with' | 'from';
+PREPOSITION : 'in' | 'at' | 'on' | 'of' | 'to' | 'with' | 'from' | 'into';
 DETDEF: 'the';
 AND : 'and';
 THEN: 'then';
