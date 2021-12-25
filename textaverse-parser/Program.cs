@@ -2,14 +2,23 @@
 namespace textaverse_parser
 {
   using Antlr4.Runtime;
+  using System.IO;
   using System.Text;
 
   public class Program
   {
     static void Main(string[] args)
     {
-      // dotnet run 'attack monster with axe, then drink water from well; attack human, then shout ""Death for all humans !"", then drink water.'
-      Try(args[0]);
+      if (args[0] == "--file" || args[0] == "-f")
+      {
+        // dotnet run --file test.vrs
+        Try(File.ReadAllText(args[1]));
+      }
+      else
+      {
+        // dotnet run 'attack monster with axe, then drink water from well; attack human, then shout ""Death for all humans !"", then drink water.'
+        Try(args[0]);
+      }
     }
 
     static void Try(string input)

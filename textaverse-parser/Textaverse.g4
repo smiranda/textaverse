@@ -27,4 +27,6 @@ fragment PUNCT: '!' | '?' | '-';
 fragment LOWERCASE  : [a-z] ;
 fragment UPPERCASE  : [A-Z] ;
 ANYWORD : (LOWERCASE | UPPERCASE | PUNCT)+;
+CR : '\r' -> skip ;
+NEWLINES : '\n' -> skip ;
 WHITESPACE : ' ' -> skip ;
