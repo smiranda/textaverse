@@ -1,29 +1,36 @@
 ﻿grammar Textaverse;
 
-file : command ((SEMI|FULLSTOP) command)* FULLSTOP* EOF;
+file : sentence ((SEMI|FULLSTOP) sentence)* FULLSTOP* EOF;
 
-command : basiccommand | basiccommand ADVERB | command COMMA THEN command;
-basiccommand : predicate object |
-               predicate indirectobject PREPOSITION object | 
-               predicate quotedarg;
-predicate : VERB;
+sentence : command | command adverb | sentence COMMA THEN sentence;
+command : predicate object |
+          predicate indirectobject PREPOSITION object | 
+          predicate quotedarg;
+predicate : verb;
 indirectobject : object;
-object : ADJECTIVE NOUN | NOUN | object AND object;
+object : (adjective)* noun (AND noun)*;
 quotedarg : ANYWORDQUOTED;
 
-ADVERB : 'quickly' | 'slowly';
+verb :  WORD;
+adverb : WORD;
+adjective : WORD;
+noun : WORD;
+
+LINECOMMENT: '#' ~[\r\n]* -> channel(2);
+
 PREPOSITION : 'in' | 'at' | 'on' | 'of' | 'to' | 'with' | 'from';
-VERB :  'attack' | 'drink' | 'shout' | 'say';
-ADJECTIVE : 'strong';
-NOUN : 'monster' | 'beast' | 'human' | 'orc' | 'axe' | 'sword' | 'water' | 'well';
 DETDEF: 'the';
 AND : 'and';
 THEN: 'then';
+
 fragment PUNCT: '!' | '?' | '-' | ',' | '.' | ' ';
 fragment LOWERCASE  : [a-z] ;
 fragment UPPERCASE  : [A-Z] ;
 fragment QUOTE : '"' ;
 ANYWORDQUOTED : QUOTE (LOWERCASE | UPPERCASE | PUNCT)+ QUOTE;
+
+WORD: (LOWERCASE | UPPERCASE)+;
+
 COMMA: ',';
 SEMI : ';';
 FULLSTOP: '.';
