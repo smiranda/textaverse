@@ -1,5 +1,4 @@
-﻿// Template generated code from Antlr4BuildTasks.Template v 8.17
-namespace textaverse_parser
+﻿namespace Textaverse.Parser
 {
   using Antlr4.Runtime;
   using Antlr4.Runtime.Misc;

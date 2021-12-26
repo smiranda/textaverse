@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "textaverse-core", "textaver
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "textaverse-silo-admin-client", "textaverse-silo-admin-client\textaverse-silo-admin-client.csproj", "{EB8ABE2D-B174-49C1-8AA9-0C318241D163}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "models", "textaverse-models\models.csproj", "{CBBADB05-A589-4642-AD7E-0D28B9B79AF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "models", "textaverse-models\textaverse-models.csproj", "{CBBADB05-A589-4642-AD7E-0D28B9B79AF3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "textaverse-grains", "textaverse-grains\textaverse-grains.csproj", "{E8F0E0EC-DC89-439E-BD79-25F458EFA18D}"
 EndProject
