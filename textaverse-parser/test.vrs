@@ -1,6 +1,6 @@
-attack monster with axe, then drink water from well slowly. # Some random comment
-attack human, then shout "Death to all humans, elfs and orcs !", then drink water and juice.
+attack monster with an axe, then drink water from the well slowly. # Some random comment
+attack human, then shout "Death to all humans, elfs and orcs !", then drink water.
 say "Hello dear !".
 say to human "Hello dear !".
-say "Hello dear !" to human.
+say "Hello dear !" to the human.
 say "Hello dear !" in room.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Textaverse.Models
 {
@@ -19,5 +20,10 @@ namespace Textaverse.Models
     }
 
     public List<Command> Commands { get; set; }
+
+    public override string ToString()
+    {
+      return string.Join('\n', Commands.Select(c => c.ToString()));
+    }
   }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Textaverse.Models
@@ -26,7 +27,28 @@ namespace Textaverse.Models
 
     public override string ToString()
     {
-      return "";
+      var v = Verb?.Token;
+      var a = Adverb?.Token;
+      var dos = DirectObjects != null ? string.Join("+", DirectObjects?.Select(o => o.Token)) : null;
+      var io = IndirectObject?.Token;
+      var p = Preposition?.Token;
+      var q = Quote;
+      var st = v;
+      if (a != null)
+        st += $" [{a}]";
+
+      st += " (";
+      if (io != null)
+        st += st.Last() != '(' ? ", " + io : io;
+      if (p != null)
+        st += st.Last() != '(' ? ", " + p : p;
+      if (dos?.Length > 0)
+        st += st.Last() != '(' ? ", " + dos : dos;
+      if (q != null)
+        st += st.Last() != '(' ? ", " + q : q;
+
+      st += ')';
+      return st;
     }
 
     public Verb Verb { get; set; }

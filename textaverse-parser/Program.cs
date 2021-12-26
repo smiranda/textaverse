@@ -95,7 +95,8 @@ namespace textaverse_parser
       else
       {
         System.Console.WriteLine("parse completed.");
-        Console.WriteLine(JObject.FromObject(r).ToString());
+        //Console.WriteLine(JObject.FromObject(r).ToString());
+        Console.WriteLine(r.ToString());
       }
     }
   }

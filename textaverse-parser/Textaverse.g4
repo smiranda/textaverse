@@ -10,8 +10,8 @@ command : (predicate indirectobject |
            predicate quotedarg PREPOSITION indirectobject) (adverb)?;
 
 predicate : verb;
-indirectobject : adjectivatedNoun;
-object : adjectivatedNoun (AND adjectivatedNoun)*;
+indirectobject : (DETERM)? adjectivatedNoun;
+object : (DETERM)? adjectivatedNoun (AND adjectivatedNoun)*;
 //adjectivatedNoun : (adjective)? noun;
 adjectivatedNoun : noun;
 quotedarg : ANYWORDQUOTED;
@@ -24,7 +24,7 @@ noun : WORD;
 LINECOMMENT: '#' ~[\r\n]* -> channel(2);
 
 PREPOSITION : 'in' | 'at' | 'on' | 'of' | 'to' | 'with' | 'from' | 'into';
-DETDEF: 'the';
+DETERM: 'the' | 'a' | 'an';
 AND : 'and';
 THEN: 'then';
 
