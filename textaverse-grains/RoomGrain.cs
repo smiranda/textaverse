@@ -28,14 +28,12 @@ namespace Textaverse.Grains
       return Task.FromResult(_roomState.Description);
     }
 
-    public Task ExecuteAgentVerse(Verse verse, AgentPointer agentPointer)
+    public Task ExecuteCommand(Command verse)
     {
-      throw new System.NotImplementedException();
-    }
+      if (verse.Verb.Token == "shout")
+      { // bad ideia to do it like this
 
-    public Task ExecuteRoomVerse(Verse verse)
-    {
-      throw new System.NotImplementedException();
+      }
     }
 
     public Task<IEnumerable<AgentPointer>> ListAgents()

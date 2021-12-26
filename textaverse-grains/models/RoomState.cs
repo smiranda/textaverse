@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Textaverse.GrainInterfaces;
+
 namespace Textaverse.Grains
 {
   public class RoomState
@@ -10,5 +13,6 @@ namespace Textaverse.Grains
 
     public string Name { get; set; }
     public string Description { get; set; }
+    public List<IAgentGrain> Agents { get; set; }
   }
 }
