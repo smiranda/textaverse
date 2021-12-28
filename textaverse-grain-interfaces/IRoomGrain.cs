@@ -14,7 +14,7 @@ namespace Textaverse.GrainInterfaces
     Task<IEnumerable<AgentPointer>> ListAgents();
     Task<IEnumerable<ObjectPointer>> ListObjects();
     Task<IEnumerable<PassagePointer>> ListPassages();
-    Task ExecuteCommand(Command verse);
+    Task<CommandResult> ExecuteCommand(Command verse);
     Task<IRoomGrain> ChangeRoom(PassagePointer passagePointer);
   }
 }

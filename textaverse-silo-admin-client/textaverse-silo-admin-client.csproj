@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <ServerGarbageCollection>true</ServerGarbageCollection>
   </PropertyGroup>
@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\textaverse-parser\textaverse-parser.csproj" />
     <ProjectReference Include="..\textaverse-silo\textaverse-silo.csproj" />
     <ProjectReference Include="..\textaverse-grain-interfaces\textaverse-grain-interfaces.csproj" />
   </ItemGroup>

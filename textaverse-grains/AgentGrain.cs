@@ -12,15 +12,17 @@ namespace Textaverse.Grains
   public class AgentGrain : Grain, IAgentGrain
   {
     private AgentPointer _agentPointer;
+    private IRoomGrain _roomGrain;
     public Task Configure(string name, IRoomGrain room)
     {
       _agentPointer = new AgentPointer { Key = this.GetPrimaryKey(), Name = name };
+      _roomGrain = room;
       return Task.CompletedTask;
     }
 
-    public Task Execute(Verse verse)
+    public async Task<CommandResult> ExecuteCommand(Command verse)
     {
-      throw new System.NotImplementedException();
+      return await _roomGrain.ExecuteCommand(verse);
     }
 
     public Task<string> GetName()

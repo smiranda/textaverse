@@ -14,6 +14,6 @@ namespace Textaverse.GrainInterfaces
     Task Configure(string name, IRoomGrain room);
     Task<string> GetName();
     Task<IRoomGrain> GetRoom();
-    Task Execute(Verse verse);
+    Task<CommandResult> ExecuteCommand(Command verse);
   }
 }
