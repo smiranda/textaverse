@@ -23,7 +23,9 @@ using var host = Host.CreateDefaultBuilder()
           options.Port = 8080;
           options.HostSelf = true;
           options.CounterUpdateIntervalMs = 10000;
-        });
+        })
+        .AddMemoryGrainStorageAsDefault()
+        .AddMemoryGrainStorage(name: "roomStateStore");
     })
     .Build();
 

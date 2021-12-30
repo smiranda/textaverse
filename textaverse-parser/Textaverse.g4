@@ -4,16 +4,16 @@ file: sentence ((SEMI | FULLSTOP) sentence)* FULLSTOP* EOF;
 
 sentence: command (COMMA THEN command)*;
 command: (
-		predicate indirectobject
-		| predicate indirectobject PREPOSITION object
+		predicate object
+		| predicate object PREPOSITION indirectobject
 		| predicate quotedarg
-		| predicate PREPOSITION indirectobject quotedarg
-		| predicate quotedarg PREPOSITION indirectobject
+		| predicate PREPOSITION object quotedarg
+		| predicate quotedarg PREPOSITION object
 	) (adverb)?;
 
 predicate: verb;
-indirectobject: (DETERM)? adjectivatedNoun;
-object: (DETERM)? adjectivatedNoun (AND adjectivatedNoun)*;
+object: (DETERM)? adjectivatedNoun;
+indirectobject: (DETERM)? adjectivatedNoun (AND adjectivatedNoun)*;
 //adjectivatedNoun : (adjective)? noun;
 adjectivatedNoun: noun;
 quotedarg: ANYWORDQUOTED;

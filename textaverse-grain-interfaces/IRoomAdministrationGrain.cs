@@ -11,5 +11,6 @@ namespace Textaverse.GrainInterfaces
   public interface IRoomAdministrationGrain : IGrainWithIntegerKey
   {
     Task Configure(string name, string description);
+    Task AddObject(ObjectPointer obj);
   }
 }

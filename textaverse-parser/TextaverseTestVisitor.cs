@@ -31,20 +31,20 @@ namespace Textaverse.Parser
       var preposition = ctx.PREPOSITION() != null ? new Preposition(ctx.PREPOSITION()?.ToString().ToLowerInvariant()) : null;
       string quote = ctx.quotedarg()?.ANYWORDQUOTED()?.ToString();
 
-      var indirectObjectToken = ctx.indirectobject() != null ? new IndirectObject(ctx.indirectobject()?.adjectivatedNoun()?.noun()?.WORD().ToString().ToLowerInvariant(),
-                                                                                  null/*ctx.indirectobject()?.adjectivatedNoun()?.adjective()?.WORD().ToString()*/)
+      var directObject = ctx.@object() != null ? new DirectObject(ctx.@object()?.adjectivatedNoun()?.noun()?.WORD().ToString().ToLowerInvariant(),
+                                                                                  null/*ctx.@object()?.adjectivatedNoun()?.adjective()?.WORD().ToString()*/)
                                                              : null;
 
-      var directObjects = ctx.@object() != null ? ctx.@object()?.adjectivatedNoun()?
-                                                  .Select(n => new DirectObject(n.noun()?.WORD()?.ToString().ToLowerInvariant(),
-                                                                                null/*n.adjective()?.WORD()?.ToString()*/ ))
+      var indirectObjects = ctx.indirectobject() != null ? ctx.indirectobject()?.adjectivatedNoun()?
+                                                  .Select(n => new IndirectObject(n.noun()?.WORD()?.ToString().ToLowerInvariant(),
+                                                                                  null/*n.adjective()?.WORD()?.ToString()*/ ))
                                                   .ToList()
                                                 : null;
 
       var command = new Command(new Verb(verbToken),
                                 adverb,
-                                directObjects,
-                                indirectObjectToken,
+                                directObject,
+                                indirectObjects,
                                 preposition,
                                 quote);
 

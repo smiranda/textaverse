@@ -12,15 +12,15 @@ namespace Textaverse.Models
   {
     public Command(Verb verb,
                    Adverb adverb = null,
-                   List<DirectObject> directObjects = null,
-                   IndirectObject indirectObject = null,
+                   DirectObject directObject = null,
+                   List<IndirectObject> indirectObjects = null,
                    Preposition preposition = null,
                    string quote = null)
     {
       Verb = verb;
       Adverb = adverb;
-      DirectObjects = directObjects;
-      IndirectObject = indirectObject;
+      DirectObject = directObject;
+      IndirectObjects = indirectObjects;
       Preposition = preposition;
       Quote = quote;
     }
@@ -29,8 +29,8 @@ namespace Textaverse.Models
     {
       var v = Verb?.Token;
       var a = Adverb?.Token;
-      var dos = DirectObjects != null ? string.Join("+", DirectObjects?.Select(o => o.Token)) : null;
-      var io = IndirectObject?.Token;
+      var ios = IndirectObjects != null ? string.Join("+", IndirectObjects?.Select(o => o.Token)) : null;
+      var dob = DirectObject?.Token;
       var p = Preposition?.Token;
       var q = Quote;
       var st = v;
@@ -38,12 +38,12 @@ namespace Textaverse.Models
         st += $" [{a}]";
 
       st += " (";
-      if (io != null)
-        st += st.Last() != '(' ? ", " + io : io;
+      if (dob != null)
+        st += st.Last() != '(' ? ", " + dob : dob;
       if (p != null)
         st += st.Last() != '(' ? ", " + p : p;
-      if (dos?.Length > 0)
-        st += st.Last() != '(' ? ", " + dos : dos;
+      if (ios?.Length > 0)
+        st += st.Last() != '(' ? ", " + ios : ios;
       if (q != null)
         st += st.Last() != '(' ? ", " + q : q;
 
@@ -56,9 +56,9 @@ namespace Textaverse.Models
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public Adverb Adverb { get; set; }
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-    public List<DirectObject> DirectObjects { get; set; }
+    public DirectObject DirectObject { get; set; }
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-    public IndirectObject IndirectObject { get; set; }
+    public List<IndirectObject> IndirectObjects { get; set; }
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public Preposition Preposition { get; set; }
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]

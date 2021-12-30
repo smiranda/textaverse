@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Orleans;
 using Textaverse.GrainInterfaces;
@@ -12,17 +13,18 @@ namespace Textaverse.Grains
   public class AgentGrain : Grain, IAgentGrain
   {
     private AgentPointer _agentPointer;
-    private IRoomGrain _roomGrain;
-    public Task Configure(string name, IRoomGrain room)
+    private long _roomId;
+    public Task Configure(string name, long roomId)
     {
       _agentPointer = new AgentPointer { Key = this.GetPrimaryKey(), Name = name };
-      _roomGrain = room;
+      _roomId = roomId;
       return Task.CompletedTask;
     }
 
     public async Task<CommandResult> ExecuteCommand(Command verse)
     {
-      return await _roomGrain.ExecuteCommand(verse);
+      Console.WriteLine("CMD AGNT");
+      return await GrainFactory.GetGrain<IRoomGrain>(_roomId).ExecuteCommand(verse);
     }
 
     public Task<string> GetName()

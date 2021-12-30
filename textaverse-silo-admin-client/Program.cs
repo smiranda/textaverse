@@ -3,6 +3,7 @@ using Orleans;
 using System;
 using Textaverse.GrainInterfaces;
 using Textaverse.Parser;
+using Textaverse.Models;
 
 using var client = new ClientBuilder()
     .UseLocalhostClustering()
@@ -19,17 +20,19 @@ Console.WriteLine(@"
 ░░░╚═╝░░░╚══════╝╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝░░░╚═╝░░░╚══════╝╚═╝░░╚═╝╚═════╝░╚══════╝");
 
 Console.WriteLine();
-Console.WriteLine("Write the name of a new agent: ");
-string name = Console.ReadLine();
 
 var room1 = client.GetGrain<IRoomGrain>(0);
 await room1.Cast<IRoomAdministrationGrain>().Configure("Hall", "A simple Hall");
+var objId = Guid.Parse("e1277f65-7d75-49cf-83e6-b9d206ec2441");
+var obj1 = client.GetGrain<IObjectGrain>(objId);
+await obj1.Configure("orb");
+var op = new ObjectPointer(objId, await obj1.GetName());
+//await room1.Cast<IRoomAdministrationGrain>().AddObject(op);
 
 var player = client.GetGrain<IAgentGrain>(Guid.NewGuid());
-await player.Configure(name, room1);
+await player.Configure("Robot", room1.GetPrimaryKeyLong());
 
-Console.WriteLine("Write a command: ");
-string command = Console.ReadLine();
+string command = args[0];
 
 try
 {

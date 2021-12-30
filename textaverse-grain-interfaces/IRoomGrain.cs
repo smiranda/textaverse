@@ -11,6 +11,7 @@ namespace Textaverse.GrainInterfaces
   public interface IRoomGrain : IGrainWithIntegerKey
   {
     Task<string> Description();
+    Task<string> GetName();
     Task<IEnumerable<AgentPointer>> ListAgents();
     Task<IEnumerable<ObjectPointer>> ListObjects();
     Task<IEnumerable<PassagePointer>> ListPassages();

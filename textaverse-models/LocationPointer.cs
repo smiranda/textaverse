@@ -4,19 +4,21 @@ using Orleans.Concurrency;
 namespace Textaverse.Models
 {
   [Immutable] // Note: This avoids data copies during grain messaging (if possible)
-  public class ObjectPointer
+  public class GrainPointer
   {
-    public ObjectPointer()
+    public GrainPointer()
     {
     }
 
-    public ObjectPointer(Guid key, string name)
+    public GrainPointer(Guid key, string name, GrainType type)
     {
       Key = key;
       Name = name;
+      Type = type;
     }
 
     public Guid Key { get; set; }
     public string Name { get; set; }
+    public GrainType Type { get; set; }
   }
 }
