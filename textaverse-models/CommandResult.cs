@@ -41,6 +41,6 @@ namespace Textaverse.Models
     // 3. A more general Command ? Maybe just return another command ! And execute this command on the agent.
     //
     // Basic version - optional objects + message
-    List<GrainPointer> Objects;
+    public List<GrainPointer> Objects;
   }
 }

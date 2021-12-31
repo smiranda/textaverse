@@ -38,10 +38,14 @@ namespace Textaverse.Grains
 
     public async Task<CommandResult> ExecuteCommand(Command verse)
     {
-      Console.WriteLine($"CMD ROOM: {verse}");
       try
       {
-        if (verse.Verb.Token == "shout")
+        if (verse.Verb.Token == "list" || verse.Verb.Token == "ls")
+        {
+          var ls = string.Join(", ", _roomState.State.Things.Select(t => t.Value.Name));
+          return CommandResult.SuccessfulResult($"things: {ls}");
+        }
+        else if (verse.Verb.Token == "shout")
         { // NOTE: bad ideia to do it like this - but it's just a draft to start exploring
           return CommandResult.SuccessfulResult($"You shout: {verse.Quote}");
         }

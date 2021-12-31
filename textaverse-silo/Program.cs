@@ -25,7 +25,8 @@ using var host = Host.CreateDefaultBuilder()
           options.CounterUpdateIntervalMs = 10000;
         })
         .AddMemoryGrainStorageAsDefault()
-        .AddMemoryGrainStorage(name: "roomStateStore");
+        .AddMemoryGrainStorage(name: "roomStateStore")
+        .AddMemoryGrainStorage(name: "agentStateStore");
     })
     .Build();
 

@@ -13,7 +13,7 @@ namespace Textaverse.GrainInterfaces
   {
     Task Configure(string name, long roomId);
     Task<string> GetName();
-    Task<IRoomGrain> GetRoom();
+    Task<long> GetRoom();
     Task<CommandResult> ExecuteCommand(Command verse);
   }
 }
