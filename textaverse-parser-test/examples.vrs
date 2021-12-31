@@ -1,9 +1,9 @@
 Drink potion.
 Get sword.
 Pick-up sword.
-Shout in room "Could someone help me ?".
-Bless dwarven-sword with elfish-ungent, then shout "Hail the elfs !".
+Shout in room 'Could someone help me ?'.
+Bless dwarven-sword with elfish-ungent, then shout 'Hail the elfs !'.
 Attack human with sword.
 Get emerald-eye from statue, then push jonh into well.
-Type into computer "let while(i < 10){i += 1; console.log('hello from JS VM');}". # i = 0; while(i < 10){i += 1; console.log(hello from JS VM);}".
-Write into computer-5 "let while(i < 10){i += 1; console.log('hello from JS VM');}". # i = 0; while(i < 10){i += 1; console.log(hello from JS VM);}".
+Type into computer 'let while(i < 10){i += 1; console.log("hello from JS VM");}'. # i = 0; while(i < 10){i += 1; console.log(hello from JS VM);}'.
+Write into computer-5 'let while(i < 10){i += 1; console.log("hello from JS VM");}'. # i = 0; while(i < 10){i += 1; console.log(hello from JS VM);}'.

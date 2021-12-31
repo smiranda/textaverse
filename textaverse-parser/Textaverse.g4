@@ -55,14 +55,15 @@ fragment PUNCT:
 	| '+'
 	| '-'
 	| '*'
-	| '\''
+	| '"'
 	| '/'
 	| '<'
+	| '`'
 	| '>';
 fragment LOWERCASE: [a-z];
 fragment UPPERCASE: [A-Z];
 fragment NUM: [0-9];
-fragment QUOTE: '"';
+fragment QUOTE: '\'';
 ANYWORDQUOTED:
 	QUOTE (LOWERCASE | UPPERCASE | PUNCT | NUM)+ QUOTE;
 

@@ -14,11 +14,13 @@
     <PackageReference Include="Microsoft.Orleans.Runtime.Abstractions" Version="3.5.1" />
     <PackageReference Include="Microsoft.Orleans.OrleansProviders" Version="3.5.1" />
     <PackageReference Include="Microsoft.Orleans.Server" Version="3.5.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\textaverse-grain-interfaces\textaverse-grain-interfaces.csproj" />
     <ProjectReference Include="..\..\dotforth\dotforth\dotforth.csproj" />
+    <ProjectReference Include="..\..\coalite\coalite-models\coalite-models.csproj" />
   </ItemGroup>
 
 </Project>

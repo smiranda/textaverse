@@ -47,19 +47,25 @@ try
 {
   do
   {
-
-    string command = Console.ReadLine();
-    if (command == ("exit"))
+    try
     {
-      exit = true;
-      break;
+      string command = Console.ReadLine();
+      if (command == ("exit"))
+      {
+        exit = true;
+        break;
+      }
+      var parser = new VerseParser();
+      var commands = parser.Parse(command).Commands;
+      foreach (var cmd in commands)
+      {
+        var result = await player.ExecuteCommand(cmd);
+        Console.WriteLine(result.Message);
+      }
     }
-    var parser = new VerseParser();
-    var commands = parser.Parse(command).Commands;
-    foreach (var cmd in commands)
+    catch (Exception e)
     {
-      var result = await player.ExecuteCommand(cmd);
-      Console.WriteLine(result.Message);
+      Console.WriteLine(e);
     }
   } while (!exit);
 }
