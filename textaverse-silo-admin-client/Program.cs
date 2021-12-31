@@ -29,6 +29,13 @@ await obj1.Configure("orb");
 var op = new ObjectPointer(objId, await obj1.GetName());
 await room1.Cast<IRoomAdministrationGrain>().AddObject(op);
 
+var objId2 = Guid.Parse("66ee60fc-9f68-4f5b-a8e2-c2c1e7659649");
+var obj2 = client.GetGrain<IForthObjectGrain>(objId2);
+await obj2.Configure("forth-interpreter");
+var op2 = new ObjectPointer(objId2, await obj2.GetName());
+await room1.Cast<IRoomAdministrationGrain>().AddObject(op2);
+
+
 var player = client.GetGrain<IAgentGrain>(Guid.NewGuid());
 await player.Configure("Robot", room1.GetPrimaryKeyLong());
 

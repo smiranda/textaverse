@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Orleans;
+using Orleans.Runtime;
 using Textaverse.GrainInterfaces;
 using Textaverse.Models;
 
@@ -11,15 +12,19 @@ namespace Textaverse.Grains
   /// </summary>
   public class ObjectGrain : Grain, IObjectGrain
   {
-    private string _name;
+    protected readonly IPersistentState<ObjectState> _objectState;
 
+    public ObjectGrain([PersistentState("objectState", "objectStateStore")] IPersistentState<ObjectState> objectState)
+    {
+      _objectState = objectState;
+    }
     public Task Configure(string name)
     {
-      _name = name;
+      _objectState.State.Name = name;
       return Task.CompletedTask;
     }
 
-    public Task<CommandResult> ExecuteCommand(Command verse)
+    public virtual Task<CommandResult> ExecuteCommand(Command verse)
     {
       throw new System.NotImplementedException();
     }
@@ -31,7 +36,7 @@ namespace Textaverse.Grains
 
     public Task<string> GetName()
     {
-      return Task.FromResult(_name);
+      return Task.FromResult(_objectState.State.Name);
     }
   }
 }

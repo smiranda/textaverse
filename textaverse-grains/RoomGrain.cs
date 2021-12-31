@@ -49,6 +49,25 @@ namespace Textaverse.Grains
         { // NOTE: bad ideia to do it like this - but it's just a draft to start exploring
           return CommandResult.SuccessfulResult($"You shout: {verse.Quote}");
         }
+        else if (verse.Verb.Token == "type")
+        {
+          if (verse.DirectObject == null)
+            return CommandResult.ErrorResult($"Verb type requires arguments"); // NOTE: This should be handled in another place.
+
+          var pointers = new List<GrainPointer>();
+          GrainPointer pointer;
+          if (!_roomState.State.Things.TryGetValue(verse.DirectObject.Token, out pointer))
+          {
+            return CommandResult.ErrorResult($"Thing not here: {verse.DirectObject.Token}");
+          }
+          if (pointer.Type != GrainType.Object)
+            return CommandResult.ErrorResult($"Verb type requires an Object argument"); // NOTE: This should be handled in another place.
+
+          // NOTE: CANNOT CHOOSE TYPE HARDCODED HERE THIS IS WRONG
+          var obj = GrainFactory.GetGrain<IForthObjectGrain>(pointer.Key);
+          var result = await obj.ExecuteCommand(verse);
+          return result;
+        }
         else if (verse.Verb.Token == "get")
         {
           if (verse.DirectObject == null)

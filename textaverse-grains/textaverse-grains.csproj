@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\textaverse-grain-interfaces\textaverse-grain-interfaces.csproj" />
+    <ProjectReference Include="..\..\dotforth\dotforth\dotforth.csproj" />
   </ItemGroup>
 
 </Project>
