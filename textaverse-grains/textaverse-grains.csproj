@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\telegra.ph.net\src\Telegraph.Net\Telegraph.Net.csproj"/>
     <ProjectReference Include="..\textaverse-grain-interfaces\textaverse-grain-interfaces.csproj" />
     <ProjectReference Include="..\..\dotforth\dotforth\dotforth.csproj" />
     <ProjectReference Include="..\..\coalite\coalite-models\coalite-models.csproj" />

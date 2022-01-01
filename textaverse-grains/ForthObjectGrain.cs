@@ -8,9 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using DotForth;
 using Ketchup.Pizza.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Orleans;
 using Orleans.Runtime;
+using Telegraph.Net;
+using Telegraph.Net.Models;
 using Textaverse.GrainInterfaces;
 using Textaverse.Models;
 
@@ -79,6 +82,34 @@ namespace Textaverse.Grains
               forth.Stack.Pop();
             });
           }));
+
+          forth.LoadWord("telacc", new CompiledWord(async (Forth forth, TextWriter output) =>
+          {
+            var telclient = new TelegraphClient();
+            var accountName = forth.Stack.Pop().Token;
+            var acc = await telclient.CreateAccountAsync(accountName);
+            forth.Stack.Push(new StackEntry(acc.AccessToken));
+            forth.Stack.Push(new StackEntry(JObject.FromObject(acc).ToString(Formatting.None)));
+          }));
+
+          // coalite accname key get pop pop accname telacc pop .
+
+          forth.LoadWord("telpost", new CompiledWord(async (Forth forth, TextWriter output) =>
+           {
+             var telclient = new TelegraphClient();
+             var accessToken = forth.Stack.Pop().Token;
+             var body = forth.Stack.Pop().Token;
+             var title = forth.Stack.Pop().Token;
+             var tokenclient = telclient.GetTokenClient(accessToken);
+             var nodes = new List<NodeElement>();
+             nodes.Add(
+               new NodeElement("p", null, body)
+             );
+             var page = await tokenclient.CreatePageAsync(title,
+                                                          nodes.ToArray(),
+                                                          returnContent: true);
+             forth.Stack.Push(new StackEntry(page.Url));
+           }));
 
           var twr = new StringWriter();
           await forth.Run(verse.Quote.Trim('\''), twr);
