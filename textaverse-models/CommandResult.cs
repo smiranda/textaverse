@@ -22,6 +22,10 @@ namespace Textaverse.Models
     {
       return new CommandResult { Success = true, Message = message, Objects = objects };
     }
+    public static CommandResult SuccessfulResult(string message, GrainPointer newRoom)
+    {
+      return new CommandResult { Success = true, Message = message, NewRoom = newRoom };
+    }
     public static CommandResult ErrorResult(string message)
     {
       return new CommandResult { Success = false, Message = message };
@@ -42,5 +46,6 @@ namespace Textaverse.Models
     //
     // Basic version - optional objects + message
     public List<GrainPointer> Objects;
+    public GrainPointer NewRoom;
   }
 }

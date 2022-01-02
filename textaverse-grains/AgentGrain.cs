@@ -21,7 +21,7 @@ namespace Textaverse.Grains
       _agentState = agentState;
     }
 
-    public Task Configure(string name, long roomId)
+    public Task Configure(string name, Guid roomId)
     {
       _agentState.State = new AgentState(roomId, new AgentPointer { Key = this.GetPrimaryKey(), Name = name });
       return Task.CompletedTask;
@@ -60,13 +60,21 @@ namespace Textaverse.Grains
         else
         {
           result = await GrainFactory.GetGrain<IRoomGrain>(_agentState.State.RoomId)
-                                     .ExecuteCommand(verse);
+                                     .ExecuteCommand(new AgentPointer(_agentState.State.AgentPointer.Key,
+                                                                      _agentState.State.AgentPointer.Name), verse);
           if (result.Success && result.Objects?.Count > 0)
           {
             foreach (var o in result.Objects)
             {
               _agentState.State.Things.Add(o.Name, o);
             }
+            await _agentState.WriteStateAsync();
+          }
+
+          if (result.Success && result.NewRoom != null)
+          {
+            _agentState.State.RoomId = result.NewRoom.Key;
+            await _agentState.WriteStateAsync();
           }
         }
       }
@@ -83,7 +91,7 @@ namespace Textaverse.Grains
       return Task.FromResult(_agentState.State.AgentPointer.Name);
     }
 
-    public Task<long> GetRoom()
+    public Task<Guid> GetRoom()
     {
       return Task.FromResult(_agentState.State.RoomId);
     }

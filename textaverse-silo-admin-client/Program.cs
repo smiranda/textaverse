@@ -21,8 +21,23 @@ Console.WriteLine(@"
 
 Console.WriteLine();
 
-var room1 = client.GetGrain<IRoomGrain>(0);
+var room1Id = Guid.Parse("b4d1a6f0-752b-4d3b-a8d4-e878a381b884");
+var room1 = client.GetGrain<IRoomGrain>(room1Id);
 await room1.Cast<IRoomAdministrationGrain>().Configure("Hall", "A simple Hall");
+
+var room2Id = Guid.Parse("f215ead8-eb61-4c38-b403-87c2d938f36b");
+var room2 = client.GetGrain<IRoomGrain>(room2Id);
+await room2.Cast<IRoomAdministrationGrain>().Configure("DarkRoom", "A small dark room");
+
+await room1.Cast<IRoomAdministrationGrain>().AddPassage(
+  new PassagePointer("door",
+                     new GrainPointer(room1.GetPrimaryKey(),
+                                      await room1.GetName(),
+                                      GrainType.Room),
+                     new GrainPointer(room2.GetPrimaryKey(),
+                                      await room2.GetName(),
+                                      GrainType.Room)));
+
 var objId = Guid.Parse("e1277f65-7d75-49cf-83e6-b9d206ec2441");
 var obj1 = client.GetGrain<IObjectGrain>(objId);
 await obj1.Configure("orb");
@@ -37,7 +52,9 @@ await room1.Cast<IRoomAdministrationGrain>().AddObject(op2);
 
 
 var player = client.GetGrain<IAgentGrain>(Guid.NewGuid());
-await player.Configure("Robot", room1.GetPrimaryKeyLong());
+await player.Configure("Robot", room1.GetPrimaryKey());
+await room1.Cast<IRoomConnectivityGrain>().TransferAgent(new AgentPointer(player.GetPrimaryKey(),
+                                                                          await player.GetName()));
 
 Console.WriteLine("You are in:");
 Console.WriteLine(await room1.Description());

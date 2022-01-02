@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Orleans;
 using Orleans.Runtime;
@@ -36,14 +37,19 @@ namespace Textaverse.Grains
       return Task.FromResult(_roomState.State.Description);
     }
 
-    public async Task<CommandResult> ExecuteCommand(Command verse)
+    public async Task<CommandResult> ExecuteCommand(AgentPointer agent, Command verse)
     {
       try
       {
         if (verse.Verb.Token == "list" || verse.Verb.Token == "ls")
         {
-          var ls = string.Join(", ", _roomState.State.Things.Select(t => t.Value.Name));
-          return CommandResult.SuccessfulResult($"things: {ls}");
+          var things = string.Join("\n", _roomState.State.Things.Select(t => " - " + t.Value.Name));
+          var passages = string.Join("\n", _roomState.State.Passages.Select(t => " - " + t.Value.Name));
+          var outstr = new StringBuilder();
+          outstr.Append($"things: \n{things}\n");
+          outstr.Append($"passages: \n{passages}\n");
+          var output = outstr.ToString();
+          return CommandResult.SuccessfulResult(output);
         }
         else if (verse.Verb.Token == "shout")
         { // NOTE: bad ideia to do it like this - but it's just a draft to start exploring
@@ -86,6 +92,52 @@ namespace Textaverse.Grains
           return CommandResult.SuccessfulResult($"You get {string.Join(", ", pointers.Select(p => p.Name))}",
                                                 pointers);
         }
+        else if (verse.Verb.Token == "move" || verse.Verb.Token == "go")
+        {
+          if (verse.DirectObject == null)
+            return CommandResult.ErrorResult($"Verb move/go requires arguments"); // NOTE: This should be handled in another place.
+
+          PassagePointer pointer;
+          if (!_roomState.State.Passages.TryGetValue(verse.DirectObject.Token, out pointer))
+          {
+            return CommandResult.ErrorResult($"Passage not here: {verse.DirectObject.Token}");
+          }
+          var passageTarget = GrainFactory.GetGrain<IRoomGrain>(pointer.Target.Key);
+
+          var roomAgentl =
+              _roomState.State.Agents.Where(a => a.Value.AgentPointer.Key == agent.Key);
+
+          if (roomAgentl.Count() == 0)
+          {
+            // Cannot happen. How to react ?
+            return CommandResult.ErrorResult($"Agent not here");
+          }
+          var roomAgente = roomAgentl.First();
+          var roomAgent = roomAgente.Value;
+          var roomAgentk = roomAgente.Key;
+
+          // Begin agent transaction (marks as transient to recover from failures)
+          try
+          {
+            roomAgent.BeginAgentTransaction(this.GetPrimaryKey(),
+                                            pointer.Target.Key);
+            await _roomState.WriteStateAsync();
+            // Transfer to the other room
+            await passageTarget.Cast<IRoomConnectivityGrain>().TransferAgent(agent);
+            // Remove from this room
+            _roomState.State.Agents.Remove(roomAgentk);
+            await _roomState.WriteStateAsync();
+
+            // Success
+            return CommandResult.SuccessfulResult($"You entered: {pointer.Target.Name}",
+                                                  pointer.Target);
+          }
+          catch
+          {
+            roomAgent.CancelAgentTransaction();
+            throw;
+          }
+        }
       }
       catch (Exception e)
       {
@@ -110,9 +162,11 @@ namespace Textaverse.Grains
       throw new System.NotImplementedException();
     }
 
-    public Task TransferAgent(AgentPointer agentPointer)
+    public async Task TransferAgent(AgentPointer agentPointer)
     {
-      throw new System.NotImplementedException();
+      _roomState.State.Agents.Add(agentPointer.Name,
+                                  new AgentInRoomState(agentPointer));
+      await _roomState.WriteStateAsync();
     }
 
     public Task<string> GetName()
@@ -123,6 +177,12 @@ namespace Textaverse.Grains
     public async Task AddObject(ObjectPointer obj)
     {
       _roomState.State.Things.Add(obj.Name, new GrainPointer(obj.Key, obj.Name, GrainType.Object));
+      await _roomState.WriteStateAsync();
+    }
+
+    public async Task AddPassage(PassagePointer passage)
+    {
+      _roomState.State.Passages.Add(passage.Name, passage);
       await _roomState.WriteStateAsync();
     }
   }

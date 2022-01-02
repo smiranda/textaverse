@@ -11,9 +11,9 @@ namespace Textaverse.GrainInterfaces
   /// </summary>
   public interface IAgentGrain : IGrainWithGuidKey
   {
-    Task Configure(string name, long roomId);
+    Task Configure(string name, Guid roomId);
     Task<string> GetName();
-    Task<long> GetRoom();
+    Task<Guid> GetRoom();
     Task<CommandResult> ExecuteCommand(Command verse);
   }
 }

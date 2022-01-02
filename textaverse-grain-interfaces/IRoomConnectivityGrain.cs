@@ -8,7 +8,7 @@ namespace Textaverse.GrainInterfaces
   /// <summary>
   /// The universe is composed by a graph of nodes. Rooms are nodes.
   /// </summary>
-  public interface IRoomConnectivityGrain : IGrainWithIntegerKey
+  public interface IRoomConnectivityGrain : IGrainWithGuidKey
   {
     Task TransferAgent(AgentPointer agentPointer);
   }
