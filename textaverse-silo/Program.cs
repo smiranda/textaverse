@@ -25,6 +25,8 @@ using var host = Host.CreateDefaultBuilder()
           options.CounterUpdateIntervalMs = 10000;
         })
         .AddMemoryGrainStorageAsDefault()
+        .AddSimpleMessageStreamProvider("SMSProvider")
+        .AddMemoryGrainStorage(name: "PubSubStore")
         .AddMemoryGrainStorage(name: "roomStateStore")
         .AddMemoryGrainStorage(name: "agentStateStore")
         .AddMemoryGrainStorage(name: "objectStateStore");

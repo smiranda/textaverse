@@ -15,5 +15,6 @@ namespace Textaverse.GrainInterfaces
     Task<string> GetName();
     Task<Guid> GetRoom();
     Task<CommandResult> ExecuteCommand(Command verse);
+    Task TransferRoom(Guid roomId);
   }
 }

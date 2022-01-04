@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Orleans;
 using Orleans.Runtime;
+using Orleans.Streams;
 using Textaverse.GrainInterfaces;
 using Textaverse.Models;
 
@@ -15,16 +16,68 @@ namespace Textaverse.Grains
   public class AgentGrain : Grain, IAgentGrain
   {
     private readonly IPersistentState<AgentState> _agentState;
+    private IAsyncStream<ChatMessage> _agentChatOutStream;
+    private StreamSubscriptionHandle<ChatMessage> _roomChatOutSubscription;
 
     public AgentGrain([PersistentState("agentState", "agentStateStore")] IPersistentState<AgentState> agentState)
     {
       _agentState = agentState;
     }
+    public override async Task OnActivateAsync()
+    {
+      // On grain activation, recover any subscription handle which was already registered
+      var streamProvider = GetStreamProvider("SMSProvider");
+      if (_agentState.State?.RoomId != Guid.Empty)
+      {
+        var stream = streamProvider.GetStream<ChatMessage>(_agentState.State.RoomId, "RoomChat.Out");
+        var subscriptionHandles = await stream.GetAllSubscriptionHandles();
+        if (subscriptionHandles?.Count > 0)
+        {
+          // We're only listening to one room at a time.
+          _roomChatOutSubscription = subscriptionHandles.First();
+          await _roomChatOutSubscription.ResumeAsync(OnNextChatMessage,
+                                                     OnErrorChatMessage,
+                                                     OnCompletedChatMessage);
+        }
+      }
+      _agentChatOutStream = streamProvider.GetStream<ChatMessage>(this.GetPrimaryKey(), "AgentChat.Out");
 
+      await base.OnActivateAsync();
+    }
+
+    private async Task OnNextChatMessage(ChatMessage message, StreamSequenceToken token)
+    {
+      // Forward room chat into agent chat
+      await _agentChatOutStream.OnNextAsync(message);
+    }
+    private async Task OnErrorChatMessage(Exception e)
+    {
+      // Forward room chat into agent chat
+      await _agentChatOutStream.OnErrorAsync(e);
+    }
+    private async Task OnCompletedChatMessage()
+    {
+      // Forward room chat into agent chat
+      await _agentChatOutStream.OnCompletedAsync();
+    }
     public Task Configure(string name, Guid roomId)
     {
       _agentState.State = new AgentState(roomId, new AgentPointer { Key = this.GetPrimaryKey(), Name = name });
       return Task.CompletedTask;
+    }
+
+    public async Task TransferRoom(Guid roomId)
+    {
+      if (_roomChatOutSubscription != null)
+      {
+        await _roomChatOutSubscription.UnsubscribeAsync();
+      }
+      var streamProvider = GetStreamProvider("SMSProvider");
+      var stream = streamProvider.GetStream<ChatMessage>(roomId, "RoomChat.Out");
+
+      _roomChatOutSubscription = await stream.SubscribeAsync(OnNextChatMessage,
+                                                             OnErrorChatMessage,
+                                                             OnCompletedChatMessage);
     }
 
     public async Task<CommandResult> ExecuteCommand(Command verse)
@@ -74,6 +127,7 @@ namespace Textaverse.Grains
           if (result.Success && result.NewRoom != null)
           {
             _agentState.State.RoomId = result.NewRoom.Key;
+            await TransferRoom(_agentState.State.RoomId);
             await _agentState.WriteStateAsync();
           }
         }

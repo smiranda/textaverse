@@ -16,10 +16,18 @@ namespace Textaverse.Grains
   public class RoomGrain : Grain, IRoomGrain, IRoomConnectivityGrain, IRoomAdministrationGrain
   {
     private readonly IPersistentState<RoomState> _roomState;
+    private Orleans.Streams.IAsyncStream<ChatMessage> _roomChatOutStream;
 
     public RoomGrain([PersistentState("roomState", "roomStateStore")] IPersistentState<RoomState> roomState)
     {
       _roomState = roomState;
+    }
+
+    public override async Task OnActivateAsync()
+    {
+      var streamProvider = GetStreamProvider("SMSProvider");
+      _roomChatOutStream = streamProvider.GetStream<ChatMessage>(this.GetPrimaryKey(), "RoomChat.Out");
+      await base.OnActivateAsync();
     }
 
     public async Task Configure(string name, string description)
@@ -53,6 +61,7 @@ namespace Textaverse.Grains
         }
         else if (verse.Verb.Token == "shout")
         { // NOTE: bad ideia to do it like this - but it's just a draft to start exploring
+          await _roomChatOutStream.OnNextAsync(new ChatMessage(verse.Quote));
           return CommandResult.SuccessfulResult($"You shout: {verse.Quote}");
         }
         else if (verse.Verb.Token == "type")

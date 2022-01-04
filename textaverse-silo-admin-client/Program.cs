@@ -4,10 +4,14 @@ using System;
 using Textaverse.GrainInterfaces;
 using Textaverse.Parser;
 using Textaverse.Models;
+using Orleans.Hosting;
+using Orleans.Streams;
+using System.Threading.Tasks;
 
 using var client = new ClientBuilder()
-    .UseLocalhostClustering()
-    .Build();
+                      .UseLocalhostClustering()
+                      .AddSimpleMessageStreamProvider("SMSProvider")
+                      .Build();
 
 await client.Connect();
 
@@ -51,13 +55,20 @@ var op2 = new ObjectPointer(objId2, await obj2.GetName());
 await room1.Cast<IRoomAdministrationGrain>().AddObject(op2);
 
 
-var player = client.GetGrain<IAgentGrain>(Guid.NewGuid());
-await player.Configure("Robot", room1.GetPrimaryKey());
+var playerId = Guid.NewGuid();
+var player = client.GetGrain<IAgentGrain>(playerId);
+await player.Configure("Robot" + playerId, room1.GetPrimaryKey());
 await room1.Cast<IRoomConnectivityGrain>().TransferAgent(new AgentPointer(player.GetPrimaryKey(),
                                                                           await player.GetName()));
+await player.TransferRoom(room1.GetPrimaryKey());
 
 Console.WriteLine("You are in:");
 Console.WriteLine(await room1.Description());
+
+var streamProvider = client.GetStreamProvider("SMSProvider");
+var chatStream = streamProvider.GetStream<ChatMessage>(playerId, "AgentChat.Out");
+await chatStream.SubscribeAsync<ChatMessage>(async (data, token) =>
+  await Task.Run(() => { Console.WriteLine($"(you hear) {data.Text}"); }));
 
 var exit = false;
 try
