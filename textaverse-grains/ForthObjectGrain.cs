@@ -92,6 +92,41 @@ namespace Textaverse.Grains
             forth.Stack.Push(new StackEntry(JObject.FromObject(acc).ToString(Formatting.None)));
           }));
 
+          forth.LoadWord("hn", new CompiledWord(async (Forth forth, TextWriter output) =>
+          {
+            if(forth.Stack.Count > 0) {
+              var tid = forth.Stack.Pop().Token;
+              var post = await _client.GetStringAsync($"https://hacker-news.firebaseio.com/v0/item/{tid}.json");
+              var jpost = JToken.Parse(post);
+              var title = jpost["title"].Value<string>();
+              output.WriteLine(title);
+
+              var comments = (jpost["kids"] as JArray).Select(k => k.Value<int>());
+              foreach (var cid in comments)
+              {
+                var comment = await _client.GetStringAsync($"https://hacker-news.firebaseio.com/v0/item/{cid}.json");
+                var jcomment = JToken.Parse(comment);
+                var iscomment = jcomment["type"]?.Value<string>() == "comment";
+                if (!iscomment)
+                  continue;
+                var text = jcomment["text"]?.Value<string>();
+                output.Write("\t");
+                output.WriteLine(text);
+              }
+            } else {
+              var response = await _client.GetStringAsync($"https://hacker-news.firebaseio.com/v0/topstories.json");
+              var ids = JToken.Parse(response).ToObject<List<string>>();
+              var top10 = ids.Take(10);
+              foreach (var tid in top10)
+              {
+                var post = await _client.GetStringAsync($"https://hacker-news.firebaseio.com/v0/item/{tid}.json");
+                var jpost = JToken.Parse(post);
+                var title = jpost["title"].Value<string>();
+                output.WriteLine($"{tid} {title}");
+              }
+            }
+          }));
+
           // coalite accname key get pop pop accname telacc pop .
 
           forth.LoadWord("telpost", new CompiledWord(async (Forth forth, TextWriter output) =>
