@@ -54,6 +54,11 @@ await obj2.Configure("forth-interpreter");
 var op2 = new ObjectPointer(objId2, await obj2.GetName());
 await room1.Cast<IRoomAdministrationGrain>().AddObject(op2);
 
+var objId3 = Guid.Parse("10a3f1ca-a94b-44b1-a821-9a89faaadc4f");
+var obj3 = client.GetGrain<IForthObjectGrain>(objId3);
+await obj3.Configure("odt-clock");
+var op3 = new ObjectPointer(objId3, await obj3.GetName());
+await room1.Cast<IRoomAdministrationGrain>().AddObject(op3);
 
 var playerId = Guid.NewGuid();
 var player = client.GetGrain<IAgentGrain>(playerId);

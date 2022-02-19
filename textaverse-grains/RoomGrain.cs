@@ -101,6 +101,25 @@ namespace Textaverse.Grains
           return CommandResult.SuccessfulResult($"You get {string.Join(", ", pointers.Select(p => p.Name))}",
                                                 pointers);
         }
+        else if (verse.Verb.Token == "read")
+        {
+          if (verse.DirectObject == null)
+            return CommandResult.ErrorResult($"Verb read requires arguments"); // NOTE: This should be handled in another place.
+
+          var pointers = new List<GrainPointer>();
+          GrainPointer pointer;
+          if (!_roomState.State.Things.TryGetValue(verse.DirectObject.Token, out pointer))
+          {
+            return CommandResult.ErrorResult($"Thing not here: {verse.DirectObject.Token}");
+          }
+          if (pointer.Type != GrainType.Object)
+            return CommandResult.ErrorResult($"Verb read requires an Object argument"); // NOTE: This should be handled in another place.
+
+          // NOTE: CANNOT CHOOSE TYPE HARDCODED HERE THIS IS WRONG
+          var obj = GrainFactory.GetGrain<IClockObjectGrain>(pointer.Key);
+          var result = await obj.ExecuteCommand(verse);
+          return result;
+        }
         else if (verse.Verb.Token == "move" || verse.Verb.Token == "go")
         {
           if (verse.DirectObject == null)
