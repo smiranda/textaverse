@@ -40,6 +40,7 @@ namespace Textaverse.Grains
                                                      OnCompletedChatMessage);
         }
       }
+      // ???? Here or constructor ??
       _agentChatOutStream = streamProvider.GetStream<ChatMessage>(this.GetPrimaryKey(), "AgentChat.Out");
 
       await base.OnActivateAsync();
@@ -60,10 +61,10 @@ namespace Textaverse.Grains
       // Forward room chat into agent chat
       await _agentChatOutStream.OnCompletedAsync();
     }
-    public Task Configure(string name, Guid roomId)
+    public async Task Configure(string name, Guid roomId)
     {
       _agentState.State = new AgentState(roomId, new AgentPointer { Key = this.GetPrimaryKey(), Name = name });
-      return Task.CompletedTask;
+      await _agentState.WriteStateAsync();
     }
 
     public async Task TransferRoom(Guid roomId)
