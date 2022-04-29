@@ -1,1 +1,22 @@
-There's a room with two doors, a wooden door and a metal door.
+There's a room named "Grandiose Hall" with id room:grandiose-hall.
+The room is "A grandiose hall lined with white marble. A fifty feet golden statue stands at the northenmost section, and its left emerald eye is gleaming as if seeing farther than the present time."
+There's an emerald eye, a forth interpreter, and a clock here.
+The emerald eye is also known as "eye", "left eye", "left emerald eye".
+It's "A shiny emerald eye which emits a misterious glow.".
+If it's at "room:hall" then it's "An emerald eye engraved in the left eye socket of the golden statue's face.".
+If it's at "room:volcano:summit" then it's like "The eye is red-hot from absorbing the hot fumes.".
+If owner is someone and (owner has object:magic:wizard-hat or owner has object:magic:wizard-staff) then it's like "The eye is emitting an eery sound.". 
+If owner is someone and owner has object:magic:wizard-hat and owner has object:magic:wizard-staff then it's like "The eye is emitting an eery voice telling you to take the ivory key to the iron chest in the throne room". 
+It floats and it burns.
+If someone says "ivory key" then say "Take the ivory key to the iron chest in the throne room" else say "They orb says nothing in return".
+About "room:hall".
+There's a wooden door and a metal door.
+The wooden door leads to a room named "Dark room" with id "room:dark-room".
+About "room:hall".
+The metal door leads to a room named "Golden room" with id "room:golden-room".
+
+The room "room:golden-room" is "A small claustrofobic room with gold plated walls."
+
+There's an monster here with id "monster:golden-lizard".
+
+This monster

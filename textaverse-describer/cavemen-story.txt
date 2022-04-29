@@ -1,0 +1,69 @@
+You wake up. You are in a small, dark cavernous room. There's a lit wooden torch flaming softly through the cold walls, which are covered in lushy moss. You've known only this place all your life, about 3 steps wide and deep. You're fed once a day a bowl of cold mushy moss soup at about this time. 
+
+Today, the soup hasn't been given yet, but in the small openning in the wall where the bowl is usually put there's something else... A worm ?
+
+> *
+You can't do that !
+
+> eat worm
+
+[(eat, worm)]
+
+You eat the worm.
+
+[event(eat, worm)]
+[overseer catches event]
+[overseer moves to door]
+
+A large stumpy caveman approaches on the other side of the wall.
+
+[overseer speaks]
+
+"Ugh Ugh where pet worm ? Where pet worm ???"
+
+He lifts the giant stone slab which was the front wall and keeps it above head, desperate to find his pet worm.
+
+> *Attempt to pass without harm*
+
+> *Attempt to pass by harming cavemen*
+
+> *Interact with moss*
+
+
+------------------ 2
+
+You wake up. You are in a small, dark cavernous room. There's a lit [wooden torch] flaming softly through the cold walls, which are covered in [lushy moss]. You've known only this place all your life, about 3 steps wide and deep. Before you stands a sturdy stone [prison door] with a small rectangular openning barred by vertical wooden stakes so that you can be peeked from outside.
+
+> Take torch.
+
+You take the torch.
+
+> light up torch.
+
+The torch is already lit.
+
+> help torch
+
+A wooden torch. Stats: Def=0, Atk=1. You can lit, unlit, throw, get, put, attack.
+
+> cast fireball into door.
+
+You cast a fiery fireball into door.
+Nothing happens.
+You consumed 1 from your mana pool.
+
+> Open door.
+
+You go through the door. 
+
+------------------ 3
+
+You enter a large, tall, iron plated room. The ceiling stands 20 feet tall and holds a black oxidated iron chandelier, which emanates candle light.
+
+At the center of the room, a Black Knight stands heavy, leaning on an iron claymore, tainted in blood. His eyes flare through a massive ornated helm.
+
+> Attack knight with club
+
+You hit the Black Knight, inflicting 0 damage points.
+The Black Knight swings his claymore at you, inflicting 10 damage points.
+You now have 30 health points.
