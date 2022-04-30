@@ -49,6 +49,8 @@ namespace Textaverse.Grains
     private async Task OnNextChatMessage(ChatMessage message, StreamSequenceToken token)
     {
       // Forward room chat into agent chat
+      Console.WriteLine("(msg) " + _agentState.State.AgentPointer.Name);
+
       await _agentChatOutStream.OnNextAsync(message);
     }
     private async Task OnErrorChatMessage(Exception e)
@@ -75,6 +77,7 @@ namespace Textaverse.Grains
       }
       var streamProvider = GetStreamProvider("SMSProvider");
       var stream = streamProvider.GetStream<ChatMessage>(roomId, "RoomChat.Out");
+      Console.WriteLine("(subs) " + _agentState.State.AgentPointer.Name);
 
       _roomChatOutSubscription = await stream.SubscribeAsync(OnNextChatMessage,
                                                              OnErrorChatMessage,

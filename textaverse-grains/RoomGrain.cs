@@ -53,7 +53,9 @@ namespace Textaverse.Grains
         {
           var things = string.Join("\n", _roomState.State.Things.Select(t => " - " + t.Value.Name));
           var passages = string.Join("\n", _roomState.State.Passages.Select(t => " - " + t.Value.Name));
+          var agents = string.Join("\n", _roomState.State.Agents.Select(t => " - " + t.Value.AgentPointer.Name));
           var outstr = new StringBuilder();
+          outstr.Append($"agents: \n{agents}\n");
           outstr.Append($"things: \n{things}\n");
           outstr.Append($"passages: \n{passages}\n");
           var output = outstr.ToString();
@@ -61,7 +63,7 @@ namespace Textaverse.Grains
         }
         else if (verse.Verb.Token == "shout")
         { // NOTE: bad ideia to do it like this - but it's just a draft to start exploring
-          await _roomChatOutStream.OnNextAsync(new ChatMessage(verse.Quote));
+          await _roomChatOutStream.OnNextAsync(new ChatMessage(verse.Quote, agent));
           return CommandResult.SuccessfulResult($"You shout: {verse.Quote}");
         }
         else if (verse.Verb.Token == "type")

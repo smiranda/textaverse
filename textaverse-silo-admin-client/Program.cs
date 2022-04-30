@@ -9,7 +9,6 @@ using Orleans.Streams;
 using System.Threading.Tasks;
 
 var create = args.Length > 0 && args[0] == "--create";
-
 using var client = new ClientBuilder()
                       .UseLocalhostClustering()
                       .AddSimpleMessageStreamProvider("SMSProvider")
@@ -74,9 +73,22 @@ if(create) {
   await room1.Cast<IRoomAdministrationGrain>().AddObject(op3);
 }
 
+if(create) {
+  var droneId = Guid.NewGuid();
+  var drone = client.GetGrain<IAgentGrain>(droneId);
+  await drone.Configure("Drone-" + droneId.ToString().Substring(0, 5), room1.GetPrimaryKey());
+  await room1.Cast<IRoomConnectivityGrain>().TransferAgent(new AgentPointer(drone.GetPrimaryKey(),
+                                                                             await drone.GetName()));
+  var soulId = Guid.NewGuid();
+  var soul = client.GetGrain<ISoulGrain>(soulId);
+  await soul.Configure(new AgentPointer(drone.GetPrimaryKey(), await drone.GetName()));
+await drone.TransferRoom(room1.GetPrimaryKey());
+
+}
+
 var playerId = Guid.NewGuid();
 var player = client.GetGrain<IAgentGrain>(playerId);
-await player.Configure("Robot" + playerId, room1.GetPrimaryKey());
+await player.Configure("Player-" + playerId.ToString().Substring(0,5), room1.GetPrimaryKey());
 await room1.Cast<IRoomConnectivityGrain>().TransferAgent(new AgentPointer(player.GetPrimaryKey(),
                                                                           await player.GetName()));
 await player.TransferRoom(room1.GetPrimaryKey());
@@ -87,7 +99,7 @@ Console.WriteLine(await room1.Description());
 var streamProvider = client.GetStreamProvider("SMSProvider");
 var chatStream = streamProvider.GetStream<ChatMessage>(playerId, "AgentChat.Out");
 await chatStream.SubscribeAsync<ChatMessage>(async (data, token) =>
-  await Task.Run(() => { Console.WriteLine($"(you hear) {data.Text}"); }));
+  await Task.Run(() => { Console.WriteLine($"[{data.Speaker.Name}] {data.Text}"); }));
 
 var exit = false;
 try
