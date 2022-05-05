@@ -6,6 +6,8 @@ sentence: command (COMMA THEN command)*;
 command: (
 		predicate object
 		| predicate object PREPOSITION indirectobject
+		| predicate object HAVING propname AS? quotedvalue (
+			COMMA? AND? propname AS? quotedvalue)*
 		| predicate quotedarg
 		| predicate PREPOSITION object quotedarg
 		| predicate quotedarg PREPOSITION object
@@ -17,6 +19,9 @@ indirectobject: (DETERM)? adjectivatedNoun (AND adjectivatedNoun)*;
 //adjectivatedNoun : (adjective)? noun;
 adjectivatedNoun: noun;
 quotedarg: ANYWORDQUOTED;
+//quotedvalue: ANYWORDQUOTED;
+quotedvalue: (ANYWORDQUOTED | WORD);
+propname: WORD;
 
 verb: WORD;
 adverb: WORD;
@@ -36,7 +41,9 @@ PREPOSITION:
 	| 'into';
 DETERM: 'the' | 'a' | 'an';
 AND: 'and';
+AS: 'as';
 THEN: 'then';
+HAVING: 'having';
 
 fragment PUNCT:
 	'!'
@@ -52,10 +59,11 @@ fragment PUNCT:
 	| '}'
 	| ';'
 	| '='
+	| ':'
 	| '+'
 	| '-'
 	| '*'
-	| '"'
+	| '\''
 	| '/'
 	| '<'
 	| '`'
@@ -63,11 +71,11 @@ fragment PUNCT:
 fragment LOWERCASE: [a-z];
 fragment UPPERCASE: [A-Z];
 fragment NUM: [0-9];
-fragment QUOTE: '\'';
+fragment QUOTE: '"';
 ANYWORDQUOTED:
 	QUOTE (LOWERCASE | UPPERCASE | PUNCT | NUM)+ QUOTE;
 
-WORD: (LOWERCASE | UPPERCASE | '-' | '_' | NUM)+;
+WORD: (LOWERCASE | UPPERCASE | ':' | '-' | '_' | NUM)+;
 
 COMMA: ',';
 SEMI: ';';

@@ -10,14 +10,14 @@ namespace Textaverse.Grains
     {
     }
 
-    public AgentState(Guid roomId, AgentPointer agentPointer)
+    public AgentState(string roomId, AgentPointer agentPointer)
     {
       RoomId = roomId;
       AgentPointer = agentPointer;
       Things = new Dictionary<string, GrainPointer>();
     }
 
-    public Guid RoomId { get; set; }
+    public string RoomId { get; set; }
     public AgentPointer AgentPointer;
     public Dictionary<string, GrainPointer> Things { get; set; }
   }

@@ -10,13 +10,13 @@ namespace Textaverse.Models
     {
     }
 
-    public ObjectPointer(Guid key, string name)
+    public ObjectPointer(string key, string name)
     {
       Key = key;
       Name = name;
     }
 
-    public Guid Key { get; set; }
+    public string Key { get; set; }
     public string Name { get; set; }
   }
 }

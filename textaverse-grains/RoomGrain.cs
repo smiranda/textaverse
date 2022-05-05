@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Orleans;
@@ -26,7 +27,7 @@ namespace Textaverse.Grains
     public override async Task OnActivateAsync()
     {
       var streamProvider = GetStreamProvider("SMSProvider");
-      _roomChatOutStream = streamProvider.GetStream<ChatMessage>(this.GetPrimaryKey(), "RoomChat.Out");
+      _roomChatOutStream = streamProvider.GetStream<ChatMessage>(new Guid(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(this.GetPrimaryKeyString())).Take(16).ToArray()), "RoomChat.Out");
       await base.OnActivateAsync();
     }
 
@@ -149,17 +150,16 @@ namespace Textaverse.Grains
           // Begin agent transaction (marks as transient to recover from failures)
           try
           {
-            roomAgent.BeginAgentTransaction(this.GetPrimaryKey(),
+            roomAgent.BeginAgentTransaction(this.GetPrimaryKeyString(),
                                             pointer.Target.Key);
             await _roomState.WriteStateAsync();
             // Transfer to the other room
-            await passageTarget.Cast<IRoomConnectivityGrain>().TransferAgent(agent);
+            var newDescription = await passageTarget.Cast<IRoomConnectivityGrain>().TransferAgent(agent);
             // Remove from this room
             _roomState.State.Agents.Remove(roomAgentk);
             await _roomState.WriteStateAsync();
-
             // Success
-            return CommandResult.SuccessfulResult($"You entered: {pointer.Target.Name}",
+            return CommandResult.SuccessfulResult($"You entered: {pointer.Target.Name}. {newDescription}",
                                                   pointer.Target);
           }
           catch
@@ -192,11 +192,12 @@ namespace Textaverse.Grains
       throw new System.NotImplementedException();
     }
 
-    public async Task TransferAgent(AgentPointer agentPointer)
+    public async Task<string> TransferAgent(AgentPointer agentPointer)
     {
       _roomState.State.Agents.Add(agentPointer.Name,
                                   new AgentInRoomState(agentPointer));
       await _roomState.WriteStateAsync();
+      return _roomState.State.Description;
     }
 
     public Task<string> GetName()

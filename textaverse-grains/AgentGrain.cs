@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Orleans;
 using Orleans.Runtime;
@@ -27,9 +29,9 @@ namespace Textaverse.Grains
     {
       // On grain activation, recover any subscription handle which was already registered
       var streamProvider = GetStreamProvider("SMSProvider");
-      if (_agentState.State?.RoomId != Guid.Empty)
+      if (!string.IsNullOrEmpty(_agentState.State?.RoomId))
       {
-        var stream = streamProvider.GetStream<ChatMessage>(_agentState.State.RoomId, "RoomChat.Out");
+        var stream = streamProvider.GetStream<ChatMessage>(new Guid(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(_agentState.State.RoomId)).Take(16).ToArray()), "RoomChat.Out");
         var subscriptionHandles = await stream.GetAllSubscriptionHandles();
         if (subscriptionHandles?.Count > 0)
         {
@@ -41,7 +43,7 @@ namespace Textaverse.Grains
         }
       }
       // ???? Here or constructor ??
-      _agentChatOutStream = streamProvider.GetStream<ChatMessage>(this.GetPrimaryKey(), "AgentChat.Out");
+      _agentChatOutStream = streamProvider.GetStream<ChatMessage>(new Guid(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(this.GetPrimaryKeyString())).Take(16).ToArray()), "AgentChat.Out");
 
       await base.OnActivateAsync();
     }
@@ -63,20 +65,20 @@ namespace Textaverse.Grains
       // Forward room chat into agent chat
       await _agentChatOutStream.OnCompletedAsync();
     }
-    public async Task Configure(string name, Guid roomId)
+    public async Task Configure(string name, string roomId)
     {
-      _agentState.State = new AgentState(roomId, new AgentPointer { Key = this.GetPrimaryKey(), Name = name });
+      _agentState.State = new AgentState(roomId, new AgentPointer { Key = this.GetPrimaryKeyString(), Name = name });
       await _agentState.WriteStateAsync();
     }
 
-    public async Task TransferRoom(Guid roomId)
+    public async Task TransferRoom(string roomId)
     {
       if (_roomChatOutSubscription != null)
       {
         await _roomChatOutSubscription.UnsubscribeAsync();
       }
       var streamProvider = GetStreamProvider("SMSProvider");
-      var stream = streamProvider.GetStream<ChatMessage>(roomId, "RoomChat.Out");
+      var stream = streamProvider.GetStream<ChatMessage>(new Guid(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(roomId)).Take(16).ToArray()), "RoomChat.Out");
       Console.WriteLine("(subs) " + _agentState.State.AgentPointer.Name);
 
       _roomChatOutSubscription = await stream.SubscribeAsync(OnNextChatMessage,
@@ -90,7 +92,67 @@ namespace Textaverse.Grains
       Console.WriteLine(verse);
       try
       {
-        if (verse.Verb.Token == "inventory" || verse.Verb.Token == "inv")
+        if (verse.Verb.Token == "create" ) {
+          if(verse.DirectObject.Token == "room") {
+            string idValue, nameValue, descriptionValue;
+            if(!verse.Properties.TryGetValue("id", out idValue))
+            {
+              return CommandResult.ErrorResult($"'{verse.DirectObject.Token}' missing id property"); // NOTE: This should be handled in another place.
+            }
+            if (!verse.Properties.TryGetValue("name", out nameValue))
+            {
+              return CommandResult.ErrorResult($"'{verse.DirectObject.Token}' missing name property"); // NOTE: This should be handled in another place.
+            }
+            if (!verse.Properties.TryGetValue("description", out descriptionValue))
+            {
+              return CommandResult.ErrorResult($"'{verse.DirectObject.Token}' missing description property"); // NOTE: This should be handled in another place.
+            }
+
+            var room = GrainFactory.GetGrain<IRoomGrain>(idValue);
+            await room.Cast<IRoomAdministrationGrain>()
+                      .Configure(nameValue, descriptionValue);
+            result = CommandResult.SuccessfulResult($"created room {idValue}");
+          } else if (verse.DirectObject.Token == "passage") {
+            string sourceValue, targetValue, nameValue;
+            if (!verse.Properties.TryGetValue("name", out nameValue))
+            {
+              return CommandResult.ErrorResult($"'{verse.DirectObject.Token}' missing name property"); // NOTE: This should be handled in another place.
+            }
+            if (!verse.Properties.TryGetValue("source", out sourceValue))
+            {
+              return CommandResult.ErrorResult($"'{verse.DirectObject.Token}' missing source property"); // NOTE: This should be handled in another place.
+            }
+            if (!verse.Properties.TryGetValue("target", out targetValue))
+            {
+              return CommandResult.ErrorResult($"'{verse.DirectObject.Token}' missing target property"); // NOTE: This should be handled in another place.
+            }
+
+            var room1 = GrainFactory.GetGrain<IRoomGrain>(sourceValue);
+            var room2 = GrainFactory.GetGrain<IRoomGrain>(targetValue);
+
+            await room1.Cast<IRoomAdministrationGrain>().AddPassage(
+              new PassagePointer(nameValue,
+                    new GrainPointer(room1.GetPrimaryKeyString(),
+                                      await room1.GetName(),
+                                      GrainType.Room),
+                    new GrainPointer(room2.GetPrimaryKeyString(),
+                                      await room2.GetName(),
+                                      GrainType.Room)));
+
+            await room2.Cast<IRoomAdministrationGrain>().AddPassage(
+              new PassagePointer(nameValue,
+                    new GrainPointer(room2.GetPrimaryKeyString(),
+                                      await room2.GetName(),
+                                      GrainType.Room),
+                    new GrainPointer(room1.GetPrimaryKeyString(),
+                                      await room1.GetName(),
+                                      GrainType.Room)));
+            result = CommandResult.SuccessfulResult($"created passage");
+          } else {
+            return CommandResult.ErrorResult($"Cannot create '{verse.DirectObject.Token}'");
+          }
+        }
+        else  if (verse.Verb.Token == "inventory" || verse.Verb.Token == "inv")
         {
           var inv = string.Join(", ", _agentState.State.Things.Select(t => t.Value.Name));
           result = CommandResult.SuccessfulResult($"inventory: {inv}");
@@ -149,7 +211,7 @@ namespace Textaverse.Grains
       return Task.FromResult(_agentState.State.AgentPointer.Name);
     }
 
-    public Task<Guid> GetRoom()
+    public Task<string> GetRoom()
     {
       return Task.FromResult(_agentState.State.RoomId);
     }

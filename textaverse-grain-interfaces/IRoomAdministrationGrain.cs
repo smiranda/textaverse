@@ -8,7 +8,7 @@ namespace Textaverse.GrainInterfaces
   /// <summary>
   /// The universe is composed by a graph of nodes. Rooms are nodes.
   /// </summary>
-  public interface IRoomAdministrationGrain : IGrainWithGuidKey
+  public interface IRoomAdministrationGrain : IGrainWithStringKey
   {
     Task Configure(string name, string description);
     Task AddObject(ObjectPointer obj);

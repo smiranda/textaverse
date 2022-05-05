@@ -9,7 +9,7 @@ namespace Textaverse.GrainInterfaces
   /// An object is a passive entity onto which actions can be executed.
   /// They can be present inside Rooms or in Agent's posession.
   /// </summary>
-  public interface IObjectGrain : IGrainWithGuidKey
+  public interface IObjectGrain : IGrainWithStringKey
   {
     Task Configure(string name);
     Task<string> GetName();

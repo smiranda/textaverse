@@ -18,7 +18,7 @@ namespace Textaverse.Grains
       Status = AgentInRoomStatus.Active;
     }
 
-    public void BeginAgentTransaction(Guid sourceRoom, Guid targetRoom)
+    public void BeginAgentTransaction(string sourceRoom, string targetRoom)
     {
       Status = AgentInRoomStatus.Transient;
       TransientSourceRoom = sourceRoom;
@@ -32,7 +32,7 @@ namespace Textaverse.Grains
     }
     public AgentPointer AgentPointer { get; set; }
     public AgentInRoomStatus Status { get; set; }
-    public Guid? TransientSourceRoom { get; set; } // valid iff Status = Transient
-    public Guid? TransientTargetRoom { get; set; } // valid iff Status = Transient
+    public string TransientSourceRoom { get; set; } // valid iff Status = Transient
+    public string TransientTargetRoom { get; set; } // valid iff Status = Transient
   }
 }

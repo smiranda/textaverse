@@ -10,14 +10,14 @@ namespace Textaverse.Models
     {
     }
 
-    public GrainPointer(Guid key, string name, GrainType type)
+    public GrainPointer(string key, string name, GrainType type)
     {
       Key = key;
       Name = name;
       Type = type;
     }
 
-    public Guid Key { get; set; }
+    public string Key { get; set; }
     public string Name { get; set; }
     public GrainType Type { get; set; }
   }

@@ -8,7 +8,7 @@ namespace Textaverse.GrainInterfaces
   /// <summary>
   /// A clock object.
   /// </summary>
-  public interface IClockObjectGrain : IObjectGrain, IGrainWithGuidKey
+  public interface IClockObjectGrain : IObjectGrain, IGrainWithStringKey
   {
   }
 }

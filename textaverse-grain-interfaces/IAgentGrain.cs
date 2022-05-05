@@ -9,12 +9,12 @@ namespace Textaverse.GrainInterfaces
   /// An agent is an entity which can execute actions in a room, change rooms,
   /// interact with objects or other agents. It can be player-controlled or not.
   /// </summary>
-  public interface IAgentGrain : IGrainWithGuidKey
+  public interface IAgentGrain : IGrainWithStringKey
   {
-    Task Configure(string name, Guid roomId);
+    Task Configure(string name, string roomId);
     Task<string> GetName();
-    Task<Guid> GetRoom();
+    Task<string> GetRoom();
     Task<CommandResult> ExecuteCommand(Command verse);
-    Task TransferRoom(Guid roomId);
+    Task TransferRoom(string roomId);
   }
 }

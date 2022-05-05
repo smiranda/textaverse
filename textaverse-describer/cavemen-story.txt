@@ -64,6 +64,56 @@ At the center of the room, a Black Knight stands heavy, leaning on an iron claym
 
 > Attack knight with club
 
-You hit the Black Knight, inflicting 0 damage points.
-The Black Knight swings his claymore at you, inflicting 10 damage points.
+You hit the Black Knight, inflicting 0 damage.
+The Black Knight swings his claymore at you, inflicting 10 damage.
 You now have 30 health points.
+
+
+------------------ 4
+
+You enter a large room with marble flooring. The ceiling stands 20 feet tall and holds a black oxidated iron chandelier, which emanates candle light. There's a stone pedestal in the center.
+
+Atop of the cold stone pedestal stands Grandmaster Barbarian Jo The Jo, boasting silver braided hair and 50 years of age - in his prime, wearing the pelt of the Great Wolf Aztafeer and battle hardened bronze plate shoulder armour. Jo holds a bronze Legendary Great Sword, a blade which has slain over 20'000 souls. He gazes north, upon a small openning in the dungeon wall onto which a telescope is encased, travelling thousands of feet towards the surface to allow peeking into the stars. Jo The Jo posesses great cosmic knowledge.
+
+> Shout "Greetings !"
+
+Adventurer shouts "Greetings !"
+Jo The Jo shouts "Silence Feeble Thing !"
+
+> Attack Jo The Jo with sword.
+
+Adventurer swings his sword onto Jo The Jo.
+Jo The Jo takes 0 damage.
+Jo The Jo swings his sword onto Adventurer.
+Adventurer takes 9756 damage.
+Adventurer has died.
+
+
+--- Hints about we being in space
+
+"Air, before a common commodity has become ever more scarce, since we started our journey."
+
+------------------ 5
+
+You enter a large room with marble flooring. The ceiling stands 20 feet tall and holds a black oxidated iron chandelier, which emanates candle light. There's a stone pedestal in the center.
+
+Atop of the cold stone pedestal stands Grandmaster Barbarian Jo The Jo, boasting silver braided hair and 50 years of age - in his prime, wearing the pelt of the Great Wolf Aztafeer and battle hardened bronze plate shoulder armour. Jo holds a bronze Legendary Great Sword, a blade which has slain over 20'000 souls. He gazes north, upon a small openning in the dungeon wall onto which a telescope is encased, travelling thousands of feet towards the surface to allow peeking into the stars. Jo The Jo posesses great cosmic knowledge.
+
+> Talk with Jo The Jo.
+
+Jo the Jo shouts "Long have I stopped collecting [Skulls]. Now I gaze the [Cosmos] looking for anwsers. "
+
+> Ask Jo The Jo about the Cosmos.
+
+Jo The Jo shouts "Raw egg shell holds cooked yolk through mistery of fire - so as well the cosmos works, we but cooked astral yolk encased by primitive still raw begining of the cosmos, where still nothing changed. But we change."
+
+> Ask Jo The Jo about the Skulls.
+
+Jo The Jo shouts "Before my prime, I fought many duels to attain knowledge. I've since lost interest in knowledge about ourselves and started looking at the stars."
+Jo The Jo gives "Goat Skull - Secret of Fire" to Adventurer.
+
+> Read Goat Skull
+
+Adventurer reads Goat Skull - Secret of Fire:
+" 
+"

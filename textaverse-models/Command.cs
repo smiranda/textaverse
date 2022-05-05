@@ -15,7 +15,8 @@ namespace Textaverse.Models
                    DirectObject directObject = null,
                    List<IndirectObject> indirectObjects = null,
                    Preposition preposition = null,
-                   string quote = null)
+                   string quote = null,
+                   Dictionary<string, string> properties = null)
     {
       Verb = verb;
       Adverb = adverb;
@@ -23,6 +24,7 @@ namespace Textaverse.Models
       IndirectObjects = indirectObjects;
       Preposition = preposition;
       Quote = quote;
+      Properties = properties;
     }
 
     public override string ToString()
@@ -32,6 +34,7 @@ namespace Textaverse.Models
       var ios = IndirectObjects != null ? string.Join("+", IndirectObjects?.Select(o => o.Token)) : null;
       var dob = DirectObject?.Token;
       var p = Preposition?.Token;
+      var props = Properties != null ? "{" + string.Join(", ", Properties?.Select(o => $"{o.Key}:{o.Value}")) +"}": null;
       var q = Quote;
       var st = v;
       if (a != null)
@@ -46,6 +49,8 @@ namespace Textaverse.Models
         st += st.Last() != '(' ? ", " + ios : ios;
       if (q != null)
         st += st.Last() != '(' ? ", " + q : q;
+      if (props != null)
+        st += st.Last() != '(' ? ", " + props : props;
 
       st += ')';
       return st;
@@ -63,5 +68,7 @@ namespace Textaverse.Models
     public Preposition Preposition { get; set; }
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public string Quote { get; set; }
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    public Dictionary<string, string> Properties { get; set; }
   }
 }

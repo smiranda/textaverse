@@ -9,7 +9,7 @@ namespace Textaverse.GrainInterfaces
   /// An agent is an entity which can execute actions in a room, change rooms,
   /// interact with objects or other agents. It can be player-controlled or not.
   /// </summary>
-  public interface ISoulGrain : IGrainWithGuidKey
+  public interface ISoulGrain : IGrainWithStringKey
   {
     Task Configure(AgentPointer agentPointer);
   }

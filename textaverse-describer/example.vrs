@@ -20,3 +20,61 @@ The room "room:golden-room" is "A small claustrofobic room with gold plated wall
 There's an monster here with id "monster:golden-lizard".
 
 This monster
+
+
+
+---------------------- 2
+//NOTE: Advantage of imperative mode is the parser will be the same as the action parser.
+//NOTE: Advantage of passive mode is that it looks more like a story AND it serves as a distinctive feature between the two modes
+
+There's a room named "Grandiose Hall" with id room:grandiose-hall.
+//>>>VS<<<
+Create room with name "Grandiose Hall" and id room:grandiose-hall.
+
+The room is "A grandiose hall lined with white marble. A fifty feet golden statue stands at the northenmost section, and its left emerald eye is gleaming as if seeing farther than the present time."
+//>>>VS<<<
+Add description "A grandiose hall lined with white marble. A fifty feet golden statue stands at the northenmost section, and its left emerald eye is gleaming as if seeing farther than the present time."
+
+// Another thing to consider. About scripts. Agent Scripts. Maybe they're also part of world parser.
+
+Create room having name as "Black Hall", and id as "room:black-hall", and description as "An iron plated corridor standing 10 feet tall.".
+
+Create room having name as "Golden Hall", and id as "room:golden-hall", and description as "A gold plated corridor standing 10 feet tall.".
+
+Create agent having name as "Black Knight", and id as "agent:black-knight", and description as "A heavy Black Knight, leaning on an iron claymore, tainted in blood. His eyes flare through a massive ornated helm."
+
+
+
+Every 10 minutes do
+	if flag-0 do
+		go north
+		unset flag-0
+	else	
+		go south
+		set flag-0
+	end 
+end
+
+// Alternative in javascript ?
+doEvery(600, function () {
+	if (flag('movflip')){
+		cmd('go north');
+		setflag('movflip');
+	} else {
+		cmd('go south');
+		unsetflag('movflip');
+	}
+});
+
+onEvent('message', function (sender, e) {
+	if (e == 'Black Pearl'){
+		cmd ("shout 'Heretic ! Thou shall not mention the Black Pearl!'");
+	} else {
+		cmd ("shout 'Silence!'");
+	}
+});
+
+onEvent('attack', function (sender, e) {
+	cmd ("attack " + sender + " with claymore");
+});
+

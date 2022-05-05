@@ -31,6 +31,20 @@ namespace Textaverse.Parser
       var preposition = ctx.PREPOSITION() != null ? new Preposition(ctx.PREPOSITION()?.ToString().ToLowerInvariant()) : null;
       string quote = ctx.quotedarg()?.ANYWORDQUOTED()?.ToString();
 
+      Dictionary<string, string> properties = null;
+      var pnames = ctx.propname()?.Select(pn => pn.WORD()?.ToString()).ToArray();
+      var pvalues = ctx.quotedvalue()?.Select(pn => 
+        pn.ANYWORDQUOTED() != null ?
+          pn.ANYWORDQUOTED()?.ToString() : pn.WORD()?.ToString()
+          ).ToArray();
+      
+      if(pnames.Count() > 0) {
+        properties = new Dictionary<string,string>();
+        for(int i = 0; i < pnames.Count(); i+=1){
+          properties[pnames[i]] = pvalues[i];
+        }
+      }
+
       var directObject = ctx.@object() != null ? new DirectObject(ctx.@object()?.adjectivatedNoun()?.noun()?.WORD().ToString().ToLowerInvariant(),
                                                                                   null/*ctx.@object()?.adjectivatedNoun()?.adjective()?.WORD().ToString()*/)
                                                              : null;
@@ -46,7 +60,8 @@ namespace Textaverse.Parser
                                 directObject,
                                 indirectObjects,
                                 preposition,
-                                quote);
+                                quote,
+                                properties);
 
       return new Verse(new List<Command>() { command });
     }
