@@ -114,6 +114,5 @@ Jo The Jo gives "Goat Skull - Secret of Fire" to Adventurer.
 
 > Read Goat Skull
 
-Adventurer reads Goat Skull - Secret of Fire:
-" 
-"
+Adventurer reads Goat Skull - Secret of Fire.
+Adventurer learned verb "kindle".

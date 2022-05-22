@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
+using System.IO;
+using System.Collections.Generic;
 
 var create = args.Length > 0 && args[0] == "--create";
 using var client = new ClientBuilder()
@@ -111,21 +113,38 @@ try
     try
     {
       string command = Console.ReadLine();
-      if(command == ""){
-        Console.WriteLine();
+      if(command == "") {
         continue;
       }
-      if (command == ("exit"))
+      else if (command == ("exit"))
       {
         exit = true;
         break;
       }
-      var parser = new VerseParser();
-      var commands = parser.Parse(command).Commands;
-      foreach (var cmd in commands)
+      
+      var cmds = new List<string>();
+      if (command.StartsWith("load"))
       {
-        var result = await player.ExecuteCommand(cmd);
-        Console.WriteLine(result.Message);
+        var path = command.Split(" ").Skip(1).First();
+        foreach(var fileCommand in File.ReadAllLines(path)) 
+        {
+          cmds.Add(fileCommand);
+        }
+        continue;
+      }
+      else
+      {
+        cmds.Add(command);
+      }
+      foreach(var cmd in cmds)
+      {
+        var parser = new VerseParser();
+        var verses = parser.Parse(command).Commands;
+        foreach (var verse in verses)
+        {
+          var result = await player.ExecuteCommand(verse);
+          Console.WriteLine(result.Message);
+        }
       }
     }
     catch (Exception e)

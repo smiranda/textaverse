@@ -1,0 +1,5 @@
+Create room having name as "Black Hall", and id as "room:black-hall", and description as "An iron plated corridor standing 10 feet tall.".
+
+Create room having id as room:golden-corridor, name as "Golden Corridor", and description as "A gold plated corridor standing 10 feet tall.".
+
+Create passage having id as passage:golden-black-door, name as "Wooden Door", description as "A cracked wooden door", source as room:golden-hall, and target as room:black-hall.

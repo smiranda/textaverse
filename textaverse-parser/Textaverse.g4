@@ -8,6 +8,9 @@ command: (
 		| predicate object PREPOSITION indirectobject
 		| predicate object HAVING propname AS? quotedvalue (
 			COMMA? AND? propname AS? quotedvalue)*
+		| THERESA object WITH propname AS? quotedvalue (
+			COMMA? AND? propname AS? quotedvalue
+		)*
 		| predicate quotedarg
 		| predicate PREPOSITION object quotedarg
 		| predicate quotedarg PREPOSITION object
